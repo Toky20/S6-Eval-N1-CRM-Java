@@ -1,4 +1,4 @@
-package s6.eval.first.crm.service;
+package s6.eval.first.crm.setting;
 
 import java.util.Map;
 

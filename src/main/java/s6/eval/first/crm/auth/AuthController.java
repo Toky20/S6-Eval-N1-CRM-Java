@@ -87,4 +87,42 @@ public class AuthController {
 
         return "redirect:/login";
     }
+
+    private final RestTemplate restTemplate;
+
+    public AuthController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    @Value("${laravel.url}/api/logout")
+    private String logoutUrl;
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
+        String token = (String) session.getAttribute("LARAVEL_TOKEN");
+        
+        if (token != null) {
+            try {
+                // Appel à l'API Laravel pour invalider le token
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(token);
+                
+                restTemplate.exchange(
+                    logoutUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(headers),
+                    Void.class
+                );
+                
+                redirectAttributes.addFlashAttribute("success", "Déconnexion réussie");
+            } catch (Exception e) {
+                logger.error("Erreur lors de la déconnexion", e);
+                redirectAttributes.addFlashAttribute("error", "Erreur lors de la déconnexion");
+            }
+        }
+        
+        // Invalidation de la session Spring
+        session.invalidate();
+        return "redirect:/login";
+    }
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h5>Détails des paiements par <span th:text="${paymentSource}"></span></h5>
+            <a th:href="@{/dashboard}" class="btn btn-secondary">Retour</a>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                Total pour cette source: <span th:text="${totalAmount}"></span> €
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <!-- <th>Client</th> -->
+                        <th>Montant</th>
+                        <th>Facture</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="payment : ${payments}">
+                        <!-- <td th:text="${payment.invoice.client.company_name}"></td> -->
+                        <td th:text="${#numbers.formatDecimal(payment.getAmountReel(), 1, 2)}"></td>
+                        <td th:text="${payment.invoice.external_id}"></td>
+                        <td>
+                            <a th:href="@{/payments/{id}(id=${payment.external_id})}" 
+                               class="btn btn-sm btn-primary">
+                                Modifier
+                            </a>
+
+                            <a th:href="@{/payments/delete/{externalId}(externalId=${payment.external_id})}" 
+                                   class="btn btn-sm btn-danger">
+                                    Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

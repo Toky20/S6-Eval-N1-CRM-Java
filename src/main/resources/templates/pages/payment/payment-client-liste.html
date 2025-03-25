@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- En-têtes communs -->
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Détails des paiements</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Source</th>
+                            <th>Facture</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="payment : ${payments.payments}">
+                            <td th:text="${#temporals.format(payment.payment_date, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${payment.getAmountReel()}"></td>
+                            <td th:text="${payment.payment_source}"></td>
+                            <td>
+                                <span th:text="${payment.invoice.external_id}"></span>
+                                (Total: <span th:text="${payment.invoice.total_price} + ' €'"></span>)
+                            </td>
+                            <td>
+                                <a th:href="@{/payments/{externalId}(externalId=${payment.external_id})}" 
+                                   class="btn btn-sm btn-warning">
+                                    Modifier
+                                </a>
+
+                                <a th:href="@{/payments/delete/{externalId}(externalId=${payment.external_id})}" 
+                                   class="btn btn-sm btn-danger">
+                                    Supprimer
+                                </a>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

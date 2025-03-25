@@ -1,208 +1,270 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorate="~{pages/layout/main-layout}" lang="fr">
+<head>
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 <body>
-    <!-- <div th:if="${stats}">
-        <h3>Statistiques des Offres</h3>
-        <div th:each="stat : ${stats.statistics}">
-            <span th:text="${stat.status}"></span>:
-            <span th:text="${stat.percentage}"></span>%
-        </div>
-    </div> -->
+    <div layout:fragment="content" class="content">
+            <!-- Animated -->
+            <div class="animated fadeIn">
+                <!-- Widgets  -->
+                <div class="row">
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-4">
+                                        <i class="pe-7s-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count" th:text="${nbclients}"></span></div>
+                                            <div class="stat-heading">Clients</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-one">
+                                    <div class="stat-icon dib"><i class="ti-layout-grid2 text-warning border-warning"></i></div>
+                                    <div class="stat-content dib">
+                                        <div class="stat-text">Projects</div>
+                                        <div class="stat-digit" th:text="${nbprojects}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-3">
+                                        <i class="pe-7s-browser"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count" th:text="${nbtasks}"></span></div>
+                                            <div class="stat-heading">Tasks</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Widgets -->
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Répartition des offres</h4>
+                                <canvas id="offerDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Offres par client</h4>
+                                <canvas id="clientOffersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graphique par user -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Offres par user</h4>
+                                <canvas id="userOffersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nouveau graphique produits -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Répartition des produits par invoice</h4>
+                                <canvas id="productDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nouveau graphique statuts -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mb-3">Répartition des status par invoice</h4>
+                                <canvas id="invoiceStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-1">
+                                        <i class="pe-7s-cash"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text"><span class="count" th:text="${paymentStats.getTotalAmountReel()}"></span></div>
+                                            <div class="stat-heading">Payments total</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Section Payment -->
+                <div class="col-lg-10 offset-md-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Payments par client</strong>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Client</th>
+                                        <th scope="col">Total payé</th>
+                                        <th scope="col">Nombre de paiements</th>
+                                        <th scope="col">% du total</th>
+                                        <th scope="col">Détails</th>
+                                    </tr>
+                                </thead>
     
-    <h3 th:text="${nbclients}">Statistiques des clients</h3> 
-    <h3 th:text="${nbprojects}">Statistiques des projets</h3> 
-    <h3 th:text="${nbtasks}">Statistiques des tasks</h3> 
+                                <tbody>
+                                    <tr th:each="stat : ${paymentStats.totals_by_client}">
+                                        <td th:text="${stat.company_name}"></td>
+                                        <td th:text="${stat.getTotalAmountReel()}"></td>
+                                        <td th:text="${stat.number_of_payments}"></td>
+                                        <td th:text="${stat.percentage_of_total} + '%'"></td>
+                                        <td>
+                                            <a th:href="@{/payments/clients/{id}(id=${stat.id})}" 
+                                               class="btn btn-sm btn-info">
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Section Payment -->
 
-    <div class="row">
-        <!-- Graphique général -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Répartition des offres</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="offerDistributionChart"></canvas>
-                </div>
-            </div>
-        </div>
+                <!-- Section Daily Payment -->
+                <div class="col-lg-10 offset-md-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Payments par jour</strong>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Montant</th>
+                                        <th scope="col">Nombre de paiements</th>
+                                        <th scope="col">Détails</th>
+                                    </tr>
+                                </thead>
     
-        <!-- Graphique par client -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Offres par client</h5>
+                                <tbody>
+                                    <tr th:each="stat : ${dailyPaymentStats.totals_by_day}">
+                                        <td th:text="${stat.getFormattedDate()}"></td>
+                                        <td th:text="${stat.getTotalAmountReel()}"></td>
+                                        <td th:text="${stat.number_of_payments}"></td>
+                                        <td>
+                                            <a th:href="@{/payments/days/{date}(date=${stat.payment_date.split('T')[0]})}" 
+                                               class="btn btn-sm btn-info">
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas id="clientOffersChart"></canvas>
+                <!-- Section Daily Payment -->
+
+                <!-- Section source Payment -->
+                <div class="col-lg-10 offset-md-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Répartition par source de paiement</strong>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Source</th>
+                                        <th scope="col">Montant</th>
+                                        <th scope="col">Nombre de paiements</th>
+                                        <th scope="col">Détails</th>
+                                    </tr>
+                                </thead>
+    
+                                <tbody>
+                                    <tr th:each="stat : ${paymentSourceStats.totals_by_source}">
+                                        <td th:text="${stat.payment_source}"></td>
+                                        <td th:text="${stat.getTotalAmountReel()}"></td>
+                                        <td th:text="${stat.total_payments}"></td>
+                                        <td>
+                                            <a th:href="@{/payments/sources/{source}(source=${stat.payment_source})}" 
+                                               class="btn btn-sm btn-info">
+                                                Voir
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+                <!-- Section source Payment -->
+
+
+
+
+
+
+
+                
+
+
+        
+                
+                
+            <!-- /#add-category -->
             </div>
-        </div>
+            <!-- .animated -->
 
-        <!-- Graphique par user -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Offres par user</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="userOffersChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nouveau graphique produits -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Répartition des produits dans les factures</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="productDistributionChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Nouveau graphique statuts -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Statut des factures</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="invoiceStatusChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section Payment -->
-        <div class="card mt-4">
-            <div class="card-header">
-                <h5>Paiements par client</h5>
-            </div>
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Total payé</th>
-                            <th>Nombre de paiements</th>
-                            <th>% du total</th>
-                            <th>Détails</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="stat : ${paymentStats.totals_by_client}">
-                            <td th:text="${stat.company_name}"></td>
-                            <td th:text="${stat.getTotalAmountReel()}"></td>
-                            <td th:text="${stat.number_of_payments}"></td>
-                            <td th:text="${stat.percentage_of_total} + '%'"></td>
-                            <td>
-                                <a th:href="@{/payments/clients/{id}(id=${stat.id})}" 
-                                   class="btn btn-sm btn-info">
-                                    Voir
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="text-end fw-bold">
-                    Total général: <span th:text="${paymentStats.getTotalAmountReel()} + ' €'"></span>
-                </div>
-            </div>
-        </div>
-        <!-- Section Payment -->
-
-
-
-        <!-- Section Daily Payments -->
-<div class="card mt-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Paiements par jour</h5>
-        <div class="total-box">
-            Total: <span th:text="${dailyPaymentStats.getTotalAmountReel()} + ' €'"></span>
-        </div>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <canvas id="dailyPaymentsChart"></canvas>
-            </div>
-            <div class="col-md-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Montant</th>
-                            <th>Nombre</th>
-                            <th>Détails</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="stat : ${dailyPaymentStats.totals_by_day}">
-                            <td th:text="${stat.getFormattedDate()}"></td>
-                            <td th:text="${stat.getTotalAmountReel()} + ' €'"></td>
-                            <td th:text="${stat.number_of_payments}"></td>
-                            <td>
-                                <a th:href="@{/payments/days/{date}(date=${stat.payment_date.split('T')[0]})}" 
-                                   class="btn btn-sm btn-info">
-                                    Voir
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Section Sources de paiement -->
-<div class="card mt-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Répartition par source de paiement</h5>
-        <div class="total-box">
-            Total: <span th:text="${paymentSourceStats.getTotalAmountReel()} + ' €'"></span>
-        </div>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-6">
-                <canvas id="paymentSourcesChart"></canvas>
-            </div>
-            <div class="col-md-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Source</th>
-                            <th>Montant</th>
-                            <th>Nombre</th>
-                            <th>Détails</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="stat : ${paymentSourceStats.totals_by_source}">
-                            <td th:text="${stat.payment_source}"></td>
-                            <td th:text="${stat.getTotalAmountReel()} + ' €'"></td>
-                            <td th:text="${stat.total_payments}"></td>
-                            <td>
-                                <a th:href="@{/payments/sources/{source}(source=${stat.payment_source})}" 
-                                   class="btn btn-sm btn-info">
-                                    Voir
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-    </div>
-</body>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <!-- JS -->
 <script th:inline="javascript">
     /*<![CDATA[*/
         // Données générales
@@ -213,7 +275,18 @@
         // Configuration générique
         const chartOptions = {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: true,
+            scales: {
+                x: {
+                    display: false
+                },
+                y: {
+                    display: false
+                }
+            },
+            animation: {
+                duration: 0 // Désactive l'animation pour éviter les transitions brutales
+            }
         };
     
         // Graphique de répartition
@@ -311,4 +384,17 @@
     /*]]>*/
     </script>
 
+
+
+
+        </div>
+        
+    </div>
+
+
+
+</body>
+
 </html>
+
+

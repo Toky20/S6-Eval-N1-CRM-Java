@@ -66,7 +66,9 @@ public class JwtAuthFilter implements Filter {
         return uri.equals("/login") 
             || uri.startsWith("/css/") 
             || uri.startsWith("/js/")
-            || uri.startsWith("/error");
+            || uri.startsWith("/error")
+            || uri.startsWith("/assets/")
+            || uri.startsWith("/images/");
     }
 
     private String extractToken(HttpSession session) {

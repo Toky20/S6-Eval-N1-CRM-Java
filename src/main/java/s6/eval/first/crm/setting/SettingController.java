@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import s6.eval.first.crm.service.SettingService;
 
 @Controller
 public class SettingController {
@@ -26,7 +25,7 @@ public class SettingController {
         String token = (String) session.getAttribute("LARAVEL_TOKEN");
         DiscountRate response = settingService.getDiscountRate(token);
         model.addAttribute("currentRate", response.getTauxremise());
-        return "settings/discount-form";
+        return "pages/settings/discount-form";
     }
 
     @PostMapping("/settings/remise")

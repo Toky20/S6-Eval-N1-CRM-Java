@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Import CSV</title>
+</head>
+<body>
+    <div th:if="${success}">
+        <h3>✅ Import réussi !</h3>
+        <p>Lignes importées: <span th:text="${success.imported}"></span></p>
+        <p>Table temporaire: <code th:text="${success.temporary_table}"></code></p>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger">
+        <h3>❌ Erreur !</h3>
+        <p th:text="${message}"></p>
+        <div th:if="${errors}">
+            <h4>Détails des erreurs :</h4>
+            <ul>
+                <li th:each="err : ${errors}" th:text="${err}"></li>
+            </ul>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" th:action="@{/import}">
+        <input type="file" name="csvFile" accept=".csv" required/>
+        <button type="submit">Importer</button>
+    </form>
+</body>
+</html>
